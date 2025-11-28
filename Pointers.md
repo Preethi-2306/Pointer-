@@ -83,17 +83,53 @@ OUTPUT : square of the value is = 16
  here what happens is unlike pass by value here we take the address of the variable directly and perform on that so now it will change the direct values in the address .-> we perfom operation like (*n) * (*n) so since in value at it will go to num address which has 4 and does this 4*4 and return the 16 as original number.
  -> The value changes permenantely inside the address, beause this adress is only present in the the pointer we made operation on.
  -> we use these when we want to rrturn too many values from a function we use pointers,
-<img width="464" height="230" alt="image" src="https://github.com/user-attachments/assets/af557460-1626-429b-98be-f8480324bcab" /> example :-
+ [*** VERY IMPORTANT ON WHY TO USE POINTERS BY REFERENCE OR POINTER] :-
+ 1️⃣ Without pointers (normal function):C can only return one value, so you’d have to call the function multiple times if you want sum, product, and average:
+#include <stdio.h>
+
+int sum(int a, int b) { return a + b; }
+int prod(int a, int b) { return a * b; }
+int avr(int a, int b) { return (a + b) / 2; }
+
+int main() {
+    int a = 2, b = 5;
+    int s = sum(a, b);
+    int p = prod(a, b);
+    int av = avr(a, b);
+
+    printf("s=%d p=%d av=%d\n", s, p, av);
+    return 0;
+}✅ Works, but you called three functions.
+
+2️⃣ With pointers (single function returning multiple values)
+#include <stdio.h>
+void work(int a, int b, int *sum, int *prod, int *avr) {
+    *sum = a + b;
+    *prod = a * b;
+    *avr = (a + b) / 2;
+}
+int main() {
+    int a = 2, b = 5;
+    int s, p, av;
+
+    work(a, b, &s, &p, &av); // only ONE function call
+
+    printf("s=%d p=%d av=%d\n", s, p, av);
+    return 0;
+}✅ Here, a single function call updates multiple variables in main because we passed their addresses.
+-> showing memory and how *sum, *prod, *avr directly update main() variables
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/0bafa39f-4e2f-45d2-baa5-95e41452e368" />
+
+<img width="464" height="230" alt="image" src="https://github.com/user-attachments/assets/af557460-1626-429b-98be-f8480324bcab" /> 
+example :-
 #include <stdio.h>
 void square(int n);
-
 void _square(int *n);
 
 int main() {
     int num=4;
     square(num);
     printf("num original value is =%d\n",num);
-   
     _square(&num);
     printf("num original value is =%d\n",num);
     return 0;
@@ -119,9 +155,9 @@ void _square(int *n){
 int work(int a, int b,int *sum,int*prod,int*avr);
 int main() {
 int a=2,b=5;
-  int sum,prod,avr;
-  
+int sum,prod,avr;
 work(a,b,&sum,&prod,&avr);
+
 printf("s=%d\n p=%d\n a=%d\n",sum,prod,avr);
     return 0;
 }
@@ -129,11 +165,39 @@ int work(int a, int b,int *sum,int*prod,int*avr){
      *sum=a+b;
      *prod=a*b;
     *avr=(a+b)/2;
-    
 }
 ourput : s=7
 p=10
 a=3
+
+[TYPES OF POINTER]:- 
+1)NULL Pointer: A null pointer is a pointer that intentionally points to nothing. It’s used to show that the pointer is empty or not assigned yet.
+Example:int *p = NULL;
+
+2)Void Pointer:A void pointer can hold the address of any data type, but you must convert it to the correct type before using it.
+Example:void *p;
+int a = 10;
+p = &a;
+printf("%d", *(int*)p);
+
+3) Wild Pointer:A wild pointer is a pointer that is declared but not initialized. It holds a garbage address, and using it can cause errors.
+Example:int *p;
+
+4)Dangling Pointer:A dangling pointer points to memory that is no longer valid, usually after freeing or deleting it.
+Example:int *p = malloc(sizeof(int));
+free(p);  // p becomes dangling
+
+[Constant Pointers]:-A constant pointer is a pointer whose address cannot change, but the value at that address can be changed. Think of it like a fixed address: you can update what’s inside the house, but you cannot move the pointer to a different house.
+#include <stdio.h>
+int main() {
+    int a = 10;
+    int * const p = &a; // p always points to 'a'
+    *p = 20;             // allowed: change the value of 'a'
+    // p = &b;           // not allowed: cannot point somewhere else
+    printf("%d\n", a);   // prints 20
+}
+[POINTER ARITHEMATIC:- https://www.geeksforgeeks.org/batch/skill-up-c/track/su-c-day10/article/NDExNTEw]
+
 [ARRAY OPERATIONS USING POINTER]:-
 ->To access elements using a pointer, both x[i] and *(x + i) are valid.
 *(x + i) is the pointer arithmetic form,
@@ -160,16 +224,3 @@ void array(int *a,int n){
     printf("%d",*(a+i));
 }
 } output is 65432
-
-
-
-
-
-
-
-            
-
-
-
-
-
